@@ -1,0 +1,429 @@
+//code en XAML structure formulaire " note : jai fait le truc de hidden pour regularisation "
+<Window x:Class="cnepApp1.Structure"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:cnepApp1"
+        mc:Ignorable="d"
+        Title="Signalement d'incident" 
+        Height="850" 
+        Width="1105"
+        FontFamily="Poppins"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Styles de base -->
+        <Style x:Key="MenuLabelStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="#FFF3F3F3"/>
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5,0"/>
+        </Style>
+
+        <Style x:Key="FormLabelStyle" TargetType="Label">
+            <Setter Property="FontFamily" Value="Arial"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Margin" Value="0,5,0,2"/>
+        </Style>
+
+        <Style x:Key="InputControlStyle" TargetType="Control">
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Height" Value="28"/>
+        </Style>
+
+        <!-- Styles spécifiques -->
+        <Style x:Key="TextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource InputControlStyle}">
+            <Setter Property="BorderBrush" Value="#FFA42C2C"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="ComboBoxStyle" TargetType="ComboBox" BasedOn="{StaticResource InputControlStyle}">
+            <Setter Property="BorderBrush" Value="#FFA42C2C"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="DatePickerStyle" TargetType="DatePicker" BasedOn="{StaticResource InputControlStyle}">
+            <Setter Property="BorderBrush" Value="#FFA42C2C"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#FFB4494A"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFAE0B0B"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <!-- Style pour les notifications -->
+        <DataTemplate x:Key="NotificationTemplate">
+            <StackPanel Margin="5">
+                <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+                <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Time}" FontSize="10" Foreground="Gray" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" x:Name="SidebarColumn"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Menu latéral -->
+        <Border Grid.Column="0" Background="#FF953939" Width="170">
+            <StackPanel x:Name="MenuItemsPanel">
+                <!-- En-tête du menu -->
+                <StackPanel Orientation="Horizontal" Margin="10,0" HorizontalAlignment="Center">
+                    <Button x:Name="ToggleButton" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                            Background="Transparent" BorderThickness="0" Height="59">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="cnep-banque-seeklogo.png" 
+                                   Width="32" Height="32" RenderTransformOrigin="0.486,0.714"/>
+                            <Label x:Name="MenuLabel" Content="MENU" FontWeight="Bold" FontSize="20" 
+                                   Foreground="#FFF1EDED" Height="32" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <Label x:Name="GestionLabel" Content="Gestion Des Incidents" 
+                       FontWeight="Bold" 
+                       FontSize="14" 
+                       Foreground="White"
+                       Padding="5" Width="165" RenderTransformOrigin="0.436,0.522" 
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" 
+                       VerticalAlignment="Center" Background="#FFBB2E2E"/>
+
+                <Rectangle Height="1" Fill="#FFF9F3F3" Margin="10,0"/>
+
+                <!-- Items du menu -->
+                <StackPanel Margin="10,20">
+                    <StackPanel Orientation="Horizontal" Cursor="Hand">
+                        <Image Source="/tableau-de-bord.png" Width="20" Height="20"/>
+                        <Label x:Name="DashboardLabel" Content="Tableau de bord" Style="{StaticResource MenuLabelStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Cursor="Hand" Background="#FF8C1E1E" Margin="0,10,0,0">
+                        <Image Source="/audit.png" Width="20" Height="20"/>
+                        <Label x:Name="IncidentLabel" Content="Signalement d'incident" Style="{StaticResource MenuLabelStyle}" Width="132" Height="39"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Cursor="Hand" Margin="0,10,0,0">
+                        <Image Source="/liste-a-puces.png" Width="20" Height="20"/>
+                        <Label x:Name="ListLabel" Content="Liste des incidents" Style="{StaticResource MenuLabelStyle}" Height="34"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Cursor="Hand" Margin="0,30,0,0">
+                        <Image Source="se-deconnecter.png" Height="81" Width="35"/>
+                        <Label x:Name="LogoutLabel" Content="Déconnexion" Style="{StaticResource MenuLabelStyle}" Margin="10,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Contenu principal -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Top Bar -->
+            <Border Grid.Row="0" Background="White" Padding="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Barre de recherche avec icône loupe -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                        <materialDesign:PackIcon Kind="Magnify" Width="20" Height="20" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        <TextBox x:Name="SearchTextBox" materialDesign:HintAssist.Hint="Rechercher..."
+                                 Margin="5,0,0,0" 
+                                 VerticalAlignment="Center"
+                                 Width="280" 
+                                 Height="30" 
+                                 BorderBrush="#FF7B262F"
+                                 Style="{StaticResource TextBoxStyle}"/>
+                    </StackPanel>
+
+                    <!-- Notifications -->
+                    <Button x:Name="NotificationButton" Grid.Column="1" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Margin="0,0,20,0">
+                        <StackPanel Orientation="Horizontal"/>
+                    </Button>
+
+                    <!-- Profil utilisateur -->
+                    <StackPanel x:Name="UserProfilePanel" Grid.Column="2" Orientation="Horizontal" Cursor="Hand">
+                        <Image Source="/utilisateur (1).png" Width="32" Height="32"/>
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock Text="Nom Prénom" FontWeight="Bold"/>
+                            <TextBlock Text="Administrateur" FontSize="11" Foreground="Gray"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Contenu du formulaire -->
+            <Grid Grid.Row="1" Background="#FFEBEBE6">
+                <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Colonne gauche -->
+                    <StackPanel Grid.Column="0">
+                        <GroupBox Header="Information de base" FontWeight="Bold" Margin="0,0,0,15">
+                            <StackPanel>
+                                <Label Content="Code Structure" Style="{StaticResource FormLabelStyle}" FontFamily="Arial" FontWeight="Normal"/>
+                                <TextBox x:Name="txtCodeStructure" Style="{StaticResource TextBoxStyle}"/>
+
+                                <Label Content="Nom du Structure" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox x:Name="txtNomStructure" Style="{StaticResource TextBoxStyle}"/>
+
+                                <Label Content="Date de déclaration" Style="{StaticResource FormLabelStyle}"/>
+                                <DatePicker x:Name="dpDateDeclaration" Style="{StaticResource DatePickerStyle}"/>
+
+                                <Label Content="Date support" Style="{StaticResource FormLabelStyle}"/>
+                                <DatePicker x:Name="dpDateSupport" Style="{StaticResource DatePickerStyle}"/>
+
+                                <Label Content="Nature support" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox x:Name="txtNatureSupport" Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                         Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Détails de l'incident" FontWeight="Bold">
+                            <StackPanel>
+                                <Label Content="Date de l'incident" Style="{StaticResource FormLabelStyle}"/>
+                                <DatePicker x:Name="dpDateIncident" Style="{StaticResource DatePickerStyle}"/>
+
+                                <Label Content="Causes" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox x:Name="cbCauses" Style="{StaticResource ComboBoxStyle}"/>
+
+                                <Label Content="Description de l'incident" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox x:Name="txtDescriptionIncident" Height="107" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                         Style="{StaticResource TextBoxStyle}"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+
+                    <!-- Colonne droite -->
+                    <StackPanel Grid.Column="2">
+                        <GroupBox Header="Impact et coût" FontWeight="Bold" Margin="0,0,0,15">
+                            <StackPanel>
+                                <Label Content="Métier impacté" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox x:Name="cbMetierImpacte" Style="{StaticResource ComboBoxStyle}"/>
+
+                                <Label Content="Catégorie de l'incident" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox x:Name="cbCategorieIncident" Style="{StaticResource ComboBoxStyle}"/>
+
+                                <Label Content="Coût incident" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox x:Name="txtCoutIncident" Text="0 DZD" TextAlignment="Right" Style="{StaticResource TextBoxStyle}"/>
+
+                                <Label Content="Impact" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox x:Name="cbImpact" Style="{StaticResource ComboBoxStyle}"/>
+
+                                <Label Content="Fréquence" Style="{StaticResource FormLabelStyle}"/>
+                                <ComboBox x:Name="cbFrequence" Style="{StaticResource ComboBoxStyle}"/>
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Régularisation" FontWeight="Bold">
+                            <StackPanel>
+                                <Label Content="Régularisation" Style="{StaticResource FormLabelStyle}"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,5">
+                                    <RadioButton x:Name="rbRegularisationOui" Content="Oui" Margin="0,0,15,0" GroupName="Regularisation"/>
+                                    <RadioButton x:Name="rbRegularisationNon" Content="Non" GroupName="Regularisation" />
+                                </StackPanel>
+
+                                <!-- Champs conditionnels -->
+                                <StackPanel x:Name="pnlRegularisationFields" Visibility="Collapsed">
+                                    <Label Content="Date de régularisation" Style="{StaticResource FormLabelStyle}"/>
+                                    <DatePicker x:Name="dpDateRegularisation" Style="{StaticResource DatePickerStyle}"/>
+
+                                    <Label Content="Montant (DZD)" Style="{StaticResource FormLabelStyle}"/>
+                                    <TextBox x:Name="txtMontantRegularisation" Text="0" TextAlignment="Right" Style="{StaticResource TextBoxStyle}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Boutons en bas à droite -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
+                    <Button x:Name="btnAnnuler" Content="Annuler" Style="{StaticResource PrimaryButton}" 
+                            Background="#FFEBE5E5" Foreground="#FF614D4D" BorderBrush="#FF7E7777"/>
+                    <Button x:Name="btnEnregistrer" Content="Enregistrer" Style="{StaticResource PrimaryButton}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
+
+
+
+
+// code behind de structure 
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
+
+namespace cnepApp1
+{
+    public partial class Structure : Window
+    {
+        private bool isSidebarCollapsed = false;
+        private const int ExpandedSidebarWidth = 170;
+        private const int CollapsedSidebarWidth = 50;
+
+        public Structure()
+        {
+            InitializeComponent();
+            InitializeNotifications();
+            SetupEventHandlers();
+            InitializeFormData();
+        }
+
+        private void InitializeNotifications()
+        {
+            var notifications = new List<Notification>
+            {
+                new Notification { Title = "Nouvel incident", Message = "Un nouvel incident a été signalé", Time = "10:30" },
+                new Notification { Title = "Régularisation", Message = "La régularisation #1234 est terminée", Time = "Hier" },
+                new Notification { Title = "Rapport mensuel", Message = "Votre rapport d'incidents est prêt", Time = "12/04/2023" }
+            };
+        }
+
+        private void InitializeFormData()
+        {
+            // Initialiser les ComboBox
+            cbCauses.ItemsSource = new List<string> { "Erreur humaine", "Défaillance technique", "Problème réseau" };
+            cbMetierImpacte.ItemsSource = new List<string> { "Comptabilité", "Ressources humaines", "Informatique" };
+            cbCategorieIncident.ItemsSource = new List<string> { "Critique", "Majeur", "Mineur" };
+            cbImpact.ItemsSource = new List<string> { "Élevé", "Moyen", "Faible" };
+            cbFrequence.ItemsSource = new List<string> { "Fréquent", "Occasionnel", "Rare" };
+
+            // Valeurs par défaut
+            dpDateDeclaration.SelectedDate = DateTime.Now;
+            dpDateIncident.SelectedDate = DateTime.Now;
+            rbRegularisationNon.IsChecked = true;
+        }
+
+        private void SetupEventHandlers()
+        {
+            ToggleButton.Click += ToggleSidebarButton_Click;
+            SearchTextBox.KeyDown += SearchTextBox_KeyDown;
+            UserProfilePanel.MouseLeftButtonDown += UserProfilePanel_MouseLeftButtonDown;
+
+            btnAnnuler.Click += (s, e) => ResetForm();
+            btnEnregistrer.Click += (s, e) => SaveIncident();
+        }
+
+        private void ToggleSidebarButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isSidebarCollapsed)
+            {
+                SidebarColumn.Width = new GridLength(ExpandedSidebarWidth);
+                AnimateSidebarItems(true);
+            }
+            else
+            {
+                SidebarColumn.Width = new GridLength(CollapsedSidebarWidth);
+                AnimateSidebarItems(false);
+            }
+            isSidebarCollapsed = !isSidebarCollapsed;
+        }
+
+        private void AnimateSidebarItems(bool show)
+        {
+            MenuLabel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            DashboardLabel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            IncidentLabel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            ListLabel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            LogoutLabel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            GestionLabel.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+
+            MenuItemsPanel.Margin = show ? new Thickness(10, 20, 0, 0) : new Thickness(5, 20, 0, 0);
+        }
+
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                MessageBox.Show($"Recherche pour: {SearchTextBox.Text}", "Recherche", MessageBoxButton.OK);
+            }
+        }
+
+        private void UserProfilePanel_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Ouverture du profil utilisateur", "Profil", MessageBoxButton.OK);
+        }
+
+        private void ResetForm()
+        {
+            txtCodeStructure.Text = string.Empty;
+            txtNomStructure.Text = string.Empty;
+            dpDateSupport.SelectedDate = null;
+            txtNatureSupport.Text = string.Empty;
+            dpDateIncident.SelectedDate = null;
+            cbCauses.SelectedIndex = -1;
+            txtDescriptionIncident.Text = string.Empty;
+            cbMetierImpacte.SelectedIndex = -1;
+            cbCategorieIncident.SelectedIndex = -1;
+            txtCoutIncident.Text = "0 DZD";
+            cbImpact.SelectedIndex = -1;
+            cbFrequence.SelectedIndex = -1;
+            rbRegularisationNon.IsChecked = true;
+            dpDateRegularisation.SelectedDate = null;
+            txtMontantRegularisation.Text = "0 DZD";
+        }
+
+        private void SaveIncident()
+        {
+            if (!ValidateForm()) return;
+
+            try
+            {
+                // Logique de sauvegarde ici
+                MessageBox.Show("Incident enregistré avec succès", "Succès", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur: {ex.Message}", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private bool ValidateForm()
+        {
+            if (string.IsNullOrWhiteSpace(txtCodeStructure.Text))
+            {
+                MessageBox.Show("Le code structure est obligatoire", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Ajouter d'autres validations au besoin
+
+            return true;
+        }
+    }
+
+    public class Notification
+    {
+        public string Title { get; set; }
+        public string Message { get; set; }
+        public string Time { get; set; }
+    }
+}
